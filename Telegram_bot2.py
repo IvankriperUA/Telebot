@@ -1,3 +1,4 @@
+import os
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import WebAppInfo
@@ -5,7 +6,11 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder
 import asyncio
 import json
 
-TOKEN = "7596009023:AAHlQMsFuvapq3gcXyArxqnwwsRTvbjDJAM"
+# Отримуємо токен з змінної середовища
+TOKEN = os.getenv('BOT_TOKEN')
+
+if not TOKEN:
+    raise ValueError("Токен не знайдено в змінних середовища!")
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
@@ -25,20 +30,10 @@ async def start(message: types.Message):
 async def handle_web_app_data(message: types.Message):
     if message.web_app_data:
         data = json.loads(message.web_app_data.data)
-        await message.answer(f"Name: {data["name"]}. Email: {data["email"]}. Phone: {data["phone"]}")
-
-
-async def main():
-    await dp.start_polling(bot)
-
-if __name__ == "__main__":
-    asyncio.run(main())
+        await message.answer(f"Name: {data['name']}. Email: {data['email']}. Phone: {data['phone']}")
 
 async def main():
     await dp.start_polling(bot)
-
-
-
 
 if __name__ == "__main__":
     asyncio.run(main())
